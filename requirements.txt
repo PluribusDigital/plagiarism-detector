@@ -1,0 +1,6 @@
+boto3
+fsspec
+pandas
+scikit-learn
+spacy
+xlrd

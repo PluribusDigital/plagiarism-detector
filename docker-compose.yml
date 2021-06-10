@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  app:
+    container_name: app
+    image: 925340840713.dkr.ecr.us-east-1.amazonaws.com/plag-detect:latest
+    build:
+      context: .
+    ports:
+      - "9000:8080"
+    env_file:
+      - ../.env
+    volumes:
+      - ./src/app.py:/home/app/app.py
