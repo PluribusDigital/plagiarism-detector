@@ -5,7 +5,7 @@ ARG RUNTIME_VERSION="3.9"
 # --------------------------------------------------------------------------------
 # Stage 1 - bundle base image + runtime
 
-FROM python:${RUNTIME_VERSION} AS python-base
+FROM python:${RUNTIME_VERSION}-slim-buster AS python-base
 
 # Install GCC (Alpine uses musl but we compile and link dependencies with GCC)
 RUN apt-get install \
@@ -26,11 +26,8 @@ RUN mkdir -p ${FUNCTION_DIR}
 COPY requirements.txt /
 RUN python${RUNTIME_VERSION} -m pip install -r /requirements.txt --target ${FUNCTION_DIR}
 
-# Install Lambda Runtime Interface Client for Python
-RUN python${RUNTIME_VERSION} -m pip install awslambdaric --target ${FUNCTION_DIR}
-
 # Copy the src files
-COPY src/* ${FUNCTION_DIR}
+COPY src/ ${FUNCTION_DIR}
 
 # --------------------------------------------------------------------------------
 # Stage 3 - final runtime image
@@ -47,14 +44,8 @@ COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
 ENV PYTHONPATH=${FUNCTION_DIR}
 RUN python -m spacy download en
 
-# (Optional) Add Lambda Runtime Interface Emulator and use a script in the ENTRYPOINT for simpler local runs
-ADD https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie /usr/bin/aws-lambda-rie
+# Copy the entry point
 COPY entry.sh /
-RUN chmod 755 /usr/bin/aws-lambda-rie /entry.sh
+RUN chmod 755 /entry.sh
 
 ENTRYPOINT [ "/entry.sh" ]
-
-# The command format should be:
-#    1. The name of the python file (app)
-#    2. The function to call (root_handler)
-CMD [ "app.root_handler" ]
