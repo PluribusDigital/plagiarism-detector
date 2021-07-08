@@ -2,7 +2,7 @@
 
 This repo is provides all the code from this _TBD_ blog post
 
-When successfully run, you will get output that shows how similar some documents are to the original text and which ones are susupected of plagiarism.
+When successfully run, you will get output that shows how similar some documents are to the original text and which ones are suspected of plagiarism.
 
 ```
                 Group Person Task Category Native English  Knowledge  Difficulty  difference  plagiarized
